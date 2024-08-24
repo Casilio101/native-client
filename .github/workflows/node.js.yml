@@ -1,0 +1,31 @@
+# Этот рабочий процесс выполнит чистую установку зависимостей узла, кэширует/восстановит их, создаст исходный код и запустит тесты для разных версий узла.
+# Для получения дополнительной информации см.: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs.
+
+имя:Node.js CI
+
+на:
+ толкать:
+ филиалы:[ "владелец" ]
+ pull_request:
+ филиалы:[ "владелец" ]
+
+рабочие места:
+ строить:
+
+ наезд:ubuntu-latest
+
+ стратегия:
+ матрица:
+ версия узла:[18.х, 20.х, 22.х]
+        # См. график поддерживаемых выпусков Node.js по адресу https://nodejs.org/en/about/releases/.
+
+ шаги:
+ -использует:действие/checkout@v4
+ -name:Использовать Node.js ${{ матрица.node-версия}}
+ использование: действие/настройка-узел@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
